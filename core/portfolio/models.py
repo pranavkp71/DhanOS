@@ -29,4 +29,4 @@ class DailySummary(models.Model):
         unique_together = ('holding', 'date')
 
     def __str__(self):
-        return f"{self.holdings.ticker} - {self.date}"
+        return f"{self.holding.ticker} - {self.date}"
