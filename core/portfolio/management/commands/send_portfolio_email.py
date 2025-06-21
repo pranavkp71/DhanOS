@@ -8,29 +8,38 @@ class Command(BaseCommand):
     help = "Send portfolio performance email with chart"
 
     def handle(self, *args, **kwargs):
-        portfolio = Portfolio.objects.first()
+        portfolio = Portfolio.objects.all()
         if not portfolio:
-            self.stdout.write(self.style.ERROR("No portfolio found"))
+            self.stdout.write(self.style.WARNING("No portfolio found"))
             return
         
-        user_email = portfolio.user.email
-        if not user_email:
-            self.stdout.write(self.style.ERROR("User does not have an email"))
-            return
-        
-        safe_name = re.sub(r'\W+', '_', portfolio.name.lower())
-        filename = f"{safe_name}_chart.png"
-        filepath = os.path.join("charts", filename)
+        for portfolio in portfolio:
+            user_email = portfolio.user.email
+            if not user_email:
+                self.stdout.write(self.style.WARNING(f"User {portfolio.user.username} has no email. Skipping."))
+                continue
 
-        subject = f"{portfolio.name} - Daily Portfolio Report"
-        body = f"""
-Hi {portfolio.user.username},
+            safe_name = re.sub(r'\W+', '_', portfolio.name.lower())
+            filename = f"{safe_name}_chart.png"
+            filepath = os.path.join("charts", filename)
 
-Attached is your latest portfolio performance chart.
-You can log in to view detailed stats.
+            subject = f"{portfolio.name} - Daily Portfolio Report"
+            body = f"""
 
-Regards,
-DhanOs
+Dear {portfolio.user.first_name or portfolio.user.username},
+
+We hope you're doing well. Please find attached the latest performance chart for your portfolio: **{portfolio.name}**.
+
+This report reflects the total value trend of your holdings over time, helping you stay informed and make smarter investment decisions.
+
+For a more detailed analysis, you can log in to your DhanOS dashboard at any time.
+
+If you have any questions or need support, feel free to reach out.
+
+Best regards,  
+Team DhanOS  
+Your Automated Stock Portfolio Assistant
+
 """
         
         msg = EmailMessage(subject, body, to={user_email})
