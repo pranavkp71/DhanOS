@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from portfolio.models import Portfolio
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,3 +15,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user
+    
+class PortfolioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Portfolio
+        fields = ['id', 'name']
