@@ -5,10 +5,11 @@ from rest_framework_simplejwt.views import (
 )
 from .views import RegisterView
 from rest_framework.routers import DefaultRouter
-from .views import PortfolioViewSet
+from .views import PortfolioViewSet, HoldingViewSet
 
 router = DefaultRouter()
 router.register(r'portfolio', PortfolioViewSet, basename='portfolio')
+router.register(r'holding', HoldingViewSet, basename='holding')
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),

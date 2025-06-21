@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from portfolio.models import Portfolio
+from portfolio.models import Portfolio, Holding
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,3 +21,8 @@ class PortfolioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Portfolio
         fields = ['id', 'name']
+
+class HoldingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Holding
+        fields = ['id', 'ticker', 'quantity', 'portfolio']
