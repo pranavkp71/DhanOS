@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework import generics, viewsets, permissions
 from .serializers import RegisterSerializer
 from django.contrib.auth.models import User
-from portfolio.models import Portfolio, Holding
-from .serializers import PortfolioSerializer, HoldingSerializer
+from portfolio.models import Portfolio, Holding, DailySummary
+from .serializers import PortfolioSerializer, HoldingSerializer, DailySummarySerializer
 from rest_framework.exceptions import PermissionDenied
 
 
@@ -33,3 +33,10 @@ class HoldingViewSet(viewsets.ModelViewSet):
         if portfolio.user != self.request.user:
             raise PermissionDenied("You can't add holdings to someone else's portfolio")
         serializer.save()
+
+class DailySummaryViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = DailySummarySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return DailySummary.objects.filter(holding__portfolio__user = self.request.user).order_by('-date')

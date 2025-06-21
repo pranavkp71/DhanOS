@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from portfolio.models import Portfolio, Holding
+from portfolio.models import Portfolio, Holding, DailySummary
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -26,3 +26,10 @@ class HoldingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Holding
         fields = ['id', 'ticker', 'quantity', 'portfolio']
+
+class DailySummarySerializer(serializers.ModelSerializer):
+    holding = serializers.StringRelatedField()
+
+    class Meta:
+        model = DailySummary
+        fields = ['id', 'holding', 'data', 'open_price', 'close_price', 'high_price', 'low_price', 'total_value']
